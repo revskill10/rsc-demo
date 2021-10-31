@@ -1,9 +1,8 @@
-import { supabase } from 'src/utils/supabaseClient'
+import { supabase } from '../src/utils/supabaseClient'
 import { Suspense } from 'react'
 import useData from 'src/utils/useData'
 import Article from 'src/components/ArticleMarkdown.server'
 import { Switch, Case, Default } from 'react-if';
-import Link from 'next/link'
 import moment from 'moment'
 import React from 'react'
 const router = {
