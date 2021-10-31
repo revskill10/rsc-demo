@@ -13,6 +13,7 @@
   "dependencies": {
     "@gqty/react": "^2.0.0",
     "@supabase/supabase-js": "1.25.2",
+    "date-fns": "^2.25.0",
     "fs": "^0.0.1-security",
     "gqty": "^2.0.3",
     "graphql": "^16.0.0",

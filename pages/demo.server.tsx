@@ -1,49 +1,57 @@
-import { createClient } from '@supabase/supabase-js'
 import { Suspense } from 'react'
 import useData from 'utils/useData'
-import Article from 'components/ArticleMarkdown.server'
 import { Switch, Case, Default } from 'react-if';
-import moment from 'moment'
+import { format } from 'date-fns'
 import React from 'react'
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-const supabase = createClient(supabaseUrl, supabaseAnonKey)
+
 const List = () => {
-    const { data } = useData('test', () => {
-        return supabase.from('articles').select('*')
+    const { results } = useData('test', () => {
+        return fetch('https://pokeapi.co/api/v2/pokemon?limit=500')
+        .then(response => response.json())
     })
-    const nodes = data.map((ar, idx) => {
+    const nodes = results.map((ar, idx) => {
         return (
-            <Article key={idx} {...ar} />
+            <div key={ar.name}><a href={`/demo?articleId=${ar.name}`}>{ar.name}</a></div>
         )
     })
     return nodes
 }
 const Test = (props) => {
     const articleId = props.articleId
-    const { data } = useData(`test-${articleId}`, () => {
-        return supabase.from('articles').select('*').eq('id', articleId).single()
+    const data = useData(`test-${articleId}`, () => {
+        return fetch('https://pokeapi.co/api/v2/pokemon/' + articleId)
+        .then(response => response.json())
     })
-    return <Article {...data} />
+    return (
+        <div>{JSON.stringify(data, null, 2)}</div>
+    )
 }
-const Main = ({ router }) => {
-    console.log('router', JSON.stringify(router, null, 2))
-    if (router) {
-        return (
-            <>             
-            <Suspense fallback={<div>Loading</div>}>
-            <a href={'/demo'}>All {moment().toDate().toUTCString()}</a>
-            <Switch>
-              <Case condition={router?.query?.articleId}><Test articleId={router?.query?.articleId} /></Case>
-              <Default><List /></Default>
-              </Switch>
-            </Suspense>
-            </>
-        )
-    } else {
-        return null
-    }
-    
+const Main = ({ initialRouter, router = initialRouter }) => {
+    const today = format(new Date(), 'yyyy-mm-dd')
+    return (
+        <>             
+        <Suspense fallback={<div>Loading</div>}>
+        <a href={'/demo'}>All {today}</a>
+        <Switch>
+            <Case condition={router?.query?.articleId}><Test articleId={router?.query?.articleId} /></Case>
+            <Default><List /></Default>
+            </Switch>
+        </Suspense>
+        </>
+    )
 }
 
 export default Main
+
+export const getServerSideProps = async (ctx) => {
+    return {
+        props: {
+            initialRouter: {
+                route: ctx.req.url,
+                asPath: ctx.req.url,
+                pathName: ctx.req.url,
+                query: ctx.query 
+            }
+        }
+    }
+}
