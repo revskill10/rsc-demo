@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import { Suspense } from 'react'
-import useData from 'src/utils/useData'
-import Article from 'src/components/ArticleMarkdown.server'
+import useData from 'utils/useData'
+import Article from 'components/ArticleMarkdown.server'
 import { Switch, Case, Default } from 'react-if';
 import moment from 'moment'
 import React from 'react'
