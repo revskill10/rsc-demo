@@ -31,3 +31,5 @@ yarn-error.log*
 
 # TODO: Remove this once ready to publish this starter template
 dump.sql
+
+.vercel
