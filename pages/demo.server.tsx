@@ -1,15 +1,13 @@
-import { supabase } from '../src/utils/supabaseClient'
+import { createClient } from '@supabase/supabase-js'
 import { Suspense } from 'react'
 import useData from 'src/utils/useData'
 import Article from 'src/components/ArticleMarkdown.server'
 import { Switch, Case, Default } from 'react-if';
 import moment from 'moment'
 import React from 'react'
-const router = {
-    query: {
-        articleId: 1
-    }
-}
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+const supabase = createClient(supabaseUrl, supabaseAnonKey)
 const List = () => {
     const { data } = useData('test', () => {
         return supabase.from('articles').select('*')
